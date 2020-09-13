@@ -22,6 +22,25 @@ Conceptually there are a number of functional steps we need to perform to get ou
   - Wikipedia Abstract
 - Make the process reproducible and automated
 ### **How**
-
+Covering all of the key deliverables above we need to develop an "FilmEngine", a reproducible package with modules that support the full data pipeline from data extraction, transformation to loading. The end result is a data model that can be used for drawing insights either via querying it with SQL or by creating data visualizations.
+The full data pipeline would consist of the following modules:
+1. Configuration
+    - Postgres Database
+    - Python 3.x + Dependencies
+    - PySpark
+2. Extraction
+    - Download the key datasets
+    - Extract and store the data
+3. Transformation
+    - Store the data inside Spark DataFrames with inferred Schemas
+    - Standardize any facts e.g. dates, integers, varchar
+    - Apply business logic
+4. Loading
+    - Create the relevant target table in the database
+    - Load the DataFrames into the respective tables
+Having the above setup we can run the package, perform tests to validate the output and explore the dataset to extract further insights.
 ### **Why**
-
+The choice of technology stack is as follows:
+- Programming Language: **Python** is the language of choice due the ease of use, a wide range of frameworks available and versatility
+- Data Integration: **Apache Spark**, a big data framework that is a high-performing, in-memory framework that facilitates the processing of large volumes of data 
+- Storage: **Postgres Database**, a simple, universally adopted relational database for keeping the transformed data
