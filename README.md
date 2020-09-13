@@ -1,9 +1,9 @@
 # FilmEngine
-## Challenge description
-TrueFilm is a film investment company - they fund new projects, with the goal of taking a share of any profits. In the past, these decisions were made on gut feeling, but as the industry becomes more and more competitive they  would like to become more data driven. They believe that by understanding which films have performed well in the past, they can make better decisions.
 
-## Chosen Approach
-In order to aid TrueFilm with their decision making process we'll need to source relevant data, model it and extract value out of it. For this exercise we'll be creating an *engine* that consists of various modules to help us make this happen. To understand the process let's discuss the task on hand in three sections; **What** the steps should be, **how** we execute these and **why** we'll be doing it in this manner.
+FilmEngine is an end-to-end Spark based data pipeline that extracts, models and loads data into a Postgres database.
+
+## Background
+TrueFilm is a film investment company - they fund new projects, with the goal of taking a share of any profits. In the past, these decisions were made on gut feeling, but as the industry becomes more and more competitive they  would like to become more data driven. They believe that by understanding which films have performed well in the past, they can make better decisions. In order to aid TrueFilm with their decision making process we'll need to source relevant data, model it and extract value out of it. For this exercise we'll be creating an *engine* that consists of various modules to help us make this happen. To understand the process let's discuss the task on hand in three sections; **What** the steps should be, **how** we execute these and **why** we'll be doing it in this manner.
 
 ### **What**
 To make data driven decisions we'll need data that gives us flm digests and metadata to drive our calculations. For the first dataset we'll use a Wikimedia extract of the latest films (approx 722MB) and a Kaggle metadata dataset (228MB).
@@ -44,3 +44,86 @@ The choice of technology stack is as follows:
 - Programming Language: **Python** is the language of choice due the ease of use, a wide range of frameworks available and versatility
 - Data Integration: **Apache Spark**, a big data framework that is a high-performing, in-memory framework that facilitates the processing of large volumes of data 
 - Storage: **Postgres Database**, a simple, universally adopted relational database for keeping the transformed data
+
+## Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+
+### Prerequisites
+
+What things you need to install the software and how to install them
+
+```
+Give examples
+```
+
+### Installing
+
+A step by step series of examples that tell you how to get a development env running
+
+Say what the step will be
+
+```
+Give the example
+```
+
+And repeat
+
+```
+until finished
+```
+
+End with an example of getting some data out of the system or using it for a little demo
+
+## Running the tests
+
+Explain how to run the automated tests for this system
+
+### Break down into end to end tests
+
+Explain what these tests test and why
+
+```
+Give an example
+```
+
+### And coding style tests
+
+Explain what these tests test and why
+
+```
+Give an example
+```
+
+## Deployment
+
+Add additional notes about how to deploy this on a live system
+
+## Built With
+
+* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
+* [Maven](https://maven.apache.org/) - Dependency Management
+* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+
+## Contributing
+
+For this project contribution is not allowed, therefore there is no need for details on code of conduct, and the process for submitting pull requests.
+
+## Versioning
+
+Versioning is not implemented. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+
+## Authors
+
+* **Alexander Sommer** - *Initial work* - [salexommer](https://github.com/salexommer)
+
+
+## License
+
+This project is is not licensed and is free to use.
+
+## Acknowledgments
+
+* Hat tip to anyone whose code was used
+* Inspiration
+* etc
