@@ -9,7 +9,7 @@ In order to aid TrueFilm with their decision making process we'll need to source
 To make data driven decisions we'll need data that gives us flm digests and metadata to drive our calculations. For the first dataset we'll use a Wikimedia extract of the latest films (approx 722MB) and a Kaggle metadata dataset (228MB).
 Conceptually there are a number of functional steps we need to perform to get our insights:
 - For each film, calculate the ratio of budget to revenue
-- Match each movie in the IMDB dataset with its corresponding Wikipedia page
+- Match each movie in the IMDb dataset with its corresponding Wikipedia page
 - Load the top 1000 movies with the highest ratio into a Postgres database, including the following for each movie:
   - Title
   - Budget
