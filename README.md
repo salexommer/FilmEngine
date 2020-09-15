@@ -51,11 +51,13 @@ These instructions will get you a copy of the project up and running on your loc
 
 What things you need to install the software and how to install them
 
-```
-Postgres Database
-Python 3.x + Dependencies
-PySpark
-```
+[Postgres](https://www.enterprisedb.com/postgresql-tutorial-resources-training?cid=47) (12.4)
+
+[Python](https://www.python.org/downloads/) (3.8.5)
+
+[Pip](https://pip.pypa.io/en/stable/installing/#) (20.2.3)
+
+[PySpark](https://pypi.org/project/pyspark/) (3.0.1)
 
 ### Installing
 
