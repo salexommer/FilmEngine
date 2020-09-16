@@ -57,7 +57,11 @@ What things you need to install the software and how to install them
 
 [Pip](https://pip.pypa.io/en/stable/installing/#) (20.2.3)
 
-[PySpark](https://pypi.org/project/pyspark/) (3.0.1)
+[PySpark](https://pypi.org/project/pyspark/) (3.0.1) - Download and install the Spark Framework
+
+[Kaggle_Dataset](https://www.kaggle.com/rounakbanik/the-movies-dataset/version/7#movies_metadata.csv) - Create an account and download the dataset
+
+[Kaggle_API](https://github.com/Kaggle/kaggle-api) - Install the Kaggle API
 
 ### Installing
 
