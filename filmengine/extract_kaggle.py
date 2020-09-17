@@ -7,6 +7,7 @@ import zipfile
 # Variables and prep
 api = KaggleApi()
 api.authenticate()
+kaggle_dataset = 'rounakbanik/the-movies-dataset'
 kaggle_file_name = 'movies_metadata.csv'
 
  #Download all files of a dataset
@@ -15,7 +16,7 @@ kaggle_file_name = 'movies_metadata.csv'
 
 # Download single file
 #Signature: dataset_download_file(dataset, file_name, path=None, force=False, quiet=True)
-api.dataset_download_file('rounakbanik/the-movies-dataset',kaggle_file_name,path='./files/')
+api.dataset_download_file(kaggle_dataset,kaggle_file_name,path='./files/')
 
 # Get the name of the downloaded archive)
 for file in os.listdir('./files/'):
