@@ -1,30 +1,33 @@
 # Initial filmengine script that will be split into separate modules later
-from kaggle.api.kaggle_api_extended import KaggleApi
-import fnmatch
+from pyspark.sql import SparkSession
+from pyspark.sql import DataFrameReader
 import os
-import zipfile
 
-# Variables and prep
-api = KaggleApi()
-api.authenticate()
-kaggle_file_name = 'movies_metadata.csv'
+# Initiate the Spark engine
+spark = SparkSession \
+    .builder \
+    .appName("FilmEngine") \
+    .config("spark.some.config.option", "some-value") \
+    .getOrCreate()
+sc = spark.sparkContext.getOrCreate()
 
- #Download all files of a dataset
-# Signature: dataset_download_files(dataset, path=None, force=False, quiet=True, unzip=False)
-#api.dataset_download_files('avenn98/world-of-warcraft-demographics')
+# Export Spark environment variables
+os.environ['PYSPARK_PYTHON'] = '/usr/bin/python3'
+os.environ['PYSPARK_DRIVER_PYTHON'] = '/usr/bin/python3'
 
-# Download single file
-#Signature: dataset_download_file(dataset, file_name, path=None, force=False, quiet=True)
-api.dataset_download_file('rounakbanik/the-movies-dataset',kaggle_file_name,path='./files/')
+#df = spark.read.csv(path='./files/movies_metadata.csv',header=True,inferSchema=True)
 
-# Get the name of the downloaded archive)
-for file in os.listdir('./files/'):
-    if fnmatch.fnmatch(file, '*' + kaggle_file_name + '*'):
-        print(file)
-        kaggle_archive_name = file
+#df.show()
+#df2 = df.first()
+#df2.show()
 
-# Decompress
-with zipfile.ZipFile("./files/" + kaggle_archive_name, 'r') as zip_ref:
-    zip_ref.extractall('./files/')
 
-print("The file " + kaggle_file_name + " has been decompressed")
+#df = spark.read.format("csv").option("header", 'true').option("delimiter", ",").load('./files/movies_metadata.csv')
+#df.show()
+
+data=sc.textFile('./files/movies_metadata.csv')
+firstRow=data.first()
+data=data.filter(lambda row: row != firstRow)
+#df = spark.read.csv(data,header=True)
+df = spark.read.format("csv").option("header", 'true').option("delimiter", ",").load(data)
+df.show()
