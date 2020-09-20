@@ -1,5 +1,8 @@
 # wikiscrapper.py
 import wikipedia
 
-print(wikipedia.summary("The Blair Witch Project (Movie)"))
-print(wikipedia.page("The Blair Witch Project (Movie)").url)
+def wikiscrap(i):
+    print(wikipedia.summary(i +" (Movie)"))
+    print(wikipedia.page(i +" (Movie)").url)
+
+wikiscrap("Bambi")

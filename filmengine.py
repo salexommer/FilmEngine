@@ -2,6 +2,9 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import monotonically_increasing_id 
 from pyspark.sql.functions import lit
+from pyspark.sql.types import StringType
+from pyspark.sql.functions import udf
+import wikipedia
 
 # Initiate the Spark engine
 spark = SparkSession \
@@ -9,6 +12,11 @@ spark = SparkSession \
     .appName("FilmEngine") \
     .getOrCreate()
 sc = spark.sparkContext.getOrCreate()
+
+# Create a UDF for looking up wikipedia links
+def wiki_link(v):
+    print(wikipedia.page(v + " (Movie)").url)
+spark.udf.register("wikiLink", wiki_link)
 
 # Build a DataFrame from the CSV file
 df = spark.read \
@@ -47,4 +55,13 @@ sqlDF = sqlDF.select("*")\
     .withColumn("row_number", monotonically_increasing_id())\
     .withColumn("wiki_abstract",lit(None).cast('string'))\
     .withColumn("wiki_link",lit(None).cast('string'))
+sqlDF.createOrReplaceTempView("metadata_wiki")
+
+sqlDF = spark.sql(
+    "SELECT \
+        title,\
+        wikiLink(title) as link\
+    FROM\
+        metadata_wiki"
+)
 sqlDF.show()
