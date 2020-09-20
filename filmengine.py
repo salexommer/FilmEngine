@@ -1,7 +1,7 @@
 # Initial filmengine script that will be split into separate modules later
 from pyspark.sql import SparkSession
-from pyspark.sql import DataFrameReader
-import os
+from pyspark.sql.functions import monotonically_increasing_id 
+from pyspark.sql.functions import lit
 
 # Initiate the Spark engine
 spark = SparkSession \
@@ -14,10 +14,37 @@ sc = spark.sparkContext.getOrCreate()
 df = spark.read \
     .option('header', 'true') \
         .csv('./files/movies_metadata.csv')
-#df.show()
-#df.printSchema()
-df.createOrReplaceTempView("metadata")
-sqlDF = spark.sql("describe metadata")
-sqlDF.show()
-sqlDF = spark.sql("SELECT * FROM metadata")
+df2 = df.select(df["original_title"].cast('string').alias("title"),\
+    df["budget"].cast('integer').alias("budget"),
+    df["release_date"].cast('date').alias("release_date"),
+    df["revenue"].cast('integer').alias("revenue"),
+    df["vote_average"].cast('float').alias("rating"),
+    df["production_companies"].cast('string').alias("production_company"))
+
+# Create a "working" table, applying calculations and adding new columns
+df2.createOrReplaceTempView("metadata")
+sqlDF = spark.sql(
+    "SELECT \
+        title, \
+        budget, \
+        year(release_date) as year, \
+        revenue, \
+        rating, \
+        budget/revenue as ratio, \
+        production_company \
+    FROM \
+        metadata\
+    WHERE \
+        revenue IS NOT NULL\
+        AND revenue != 0\
+        AND budget != 0\
+        AND rating IS NOT NULL\
+        AND budget > 10\
+    ORDER BY ratio asc\
+    LIMIT 1000"
+    )
+sqlDF = sqlDF.select("*")\
+    .withColumn("row_number", monotonically_increasing_id())\
+    .withColumn("wiki_abstract",lit(None).cast('string'))\
+    .withColumn("wiki_link",lit(None).cast('string'))
 sqlDF.show()
