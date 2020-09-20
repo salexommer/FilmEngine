@@ -7,27 +7,17 @@ import os
 spark = SparkSession \
     .builder \
     .appName("FilmEngine") \
-    .config("spark.some.config.option", "some-value") \
     .getOrCreate()
 sc = spark.sparkContext.getOrCreate()
 
-# Export Spark environment variables
-os.environ['PYSPARK_PYTHON'] = '/usr/bin/python3'
-os.environ['PYSPARK_DRIVER_PYTHON'] = '/usr/bin/python3'
-
-#df = spark.read.csv(path='./files/movies_metadata.csv',header=True,inferSchema=True)
-
+# Build a DataFrame from the CSV file
+df = spark.read \
+    .option('header', 'true') \
+        .csv('./files/movies_metadata.csv')
 #df.show()
-#df2 = df.first()
-#df2.show()
-
-
-#df = spark.read.format("csv").option("header", 'true').option("delimiter", ",").load('./files/movies_metadata.csv')
-#df.show()
-
-data=sc.textFile('./files/movies_metadata.csv')
-firstRow=data.first()
-data=data.filter(lambda row: row != firstRow)
-#df = spark.read.csv(data,header=True)
-df = spark.read.format("csv").option("header", 'true').option("delimiter", ",").load(data)
-df.show()
+#df.printSchema()
+df.createOrReplaceTempView("metadata")
+sqlDF = spark.sql("describe metadata")
+sqlDF.show()
+sqlDF = spark.sql("SELECT * FROM metadata")
+sqlDF.show()
