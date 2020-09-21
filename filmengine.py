@@ -5,6 +5,7 @@ from pyspark.sql.functions import lit
 from pyspark.sql.types import StringType
 from pyspark.sql.functions import udf
 import wikipedia
+import pandas as pd
 
 # Initiate the Spark engine
 spark = SparkSession \
@@ -14,9 +15,18 @@ spark = SparkSession \
 sc = spark.sparkContext.getOrCreate()
 
 # Create a UDF for looking up wikipedia links
-def wiki_link(v):
-    print(wikipedia.page(v + " (Movie)").url)
-spark.udf.register("wikiLink", wiki_link)
+def wikilink(i):
+    try:
+        link = wikipedia.page(i +" (Film)").url
+        return link
+    except:
+        return None
+def wikiabstract(i):
+    try:
+        abstract = wikipedia.summary(i +" (Movie)")
+        return abstract
+    except:
+        return None
 
 # Build a DataFrame from the CSV file
 df = spark.read \
@@ -51,17 +61,26 @@ sqlDF = spark.sql(
     ORDER BY ratio asc\
     LIMIT 1000"
     )
+ 
 sqlDF = sqlDF.select("*")\
-    .withColumn("row_number", monotonically_increasing_id())\
     .withColumn("wiki_abstract",lit(None).cast('string'))\
     .withColumn("wiki_link",lit(None).cast('string'))
-sqlDF.createOrReplaceTempView("metadata_wiki")
+sqlPDF = sqlDF.select("*").toPandas()
 
-sqlDF = spark.sql(
-    "SELECT \
-        title,\
-        wikiLink(title) as link\
-    FROM\
-        metadata_wiki"
-)
+# Create a loop to populate the Wiki links and abstracts
+
+m = 0
+while m <= 5:
+    func_val = sqlPDF.at[m, 'title']
+    link = wikilink(func_val)
+    abstract = wikiabstract(func_val)
+    sqlPDF.at[m, 'wiki_link'] = link
+    sqlPDF.at[m, 'wiki_abstract'] = abstract
+    print("Row " + str(m) + " has been populated for the film: " + func_val)
+    m = m + 1
+print("The links and abstracts have been populated.")
+
+# Show the results
+sqlDF = spark.createDataFrame(sqlPDF)
+sqlDF.repartition(1).write.csv('./files/metadata_sample.csv', header=True,)
 sqlDF.show()

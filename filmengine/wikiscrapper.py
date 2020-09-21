@@ -2,7 +2,9 @@
 import wikipedia
 
 def wikiscrap(i):
-    print(wikipedia.summary(i +" (Movie)"))
-    print(wikipedia.page(i +" (Movie)").url)
+    summary = print(wikipedia.summary(i +" (Movie)"))
+    link = wikipedia.page(i +" (Movie)").url
+    return summary
+    return link
 
 wikiscrap("Bambi")
