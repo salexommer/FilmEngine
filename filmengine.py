@@ -1,9 +1,6 @@
 # Initial filmengine script that will be split into separate modules later
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import monotonically_increasing_id 
-from pyspark.sql.functions import lit
-from pyspark.sql.types import StringType
-from pyspark.sql.functions import udf
+from pyspark.sql.functions import monotonically_increasing_id, lit, udf
 import wikipedia
 import pandas as pd
 
@@ -11,8 +8,19 @@ import pandas as pd
 spark = SparkSession \
     .builder \
     .appName("FilmEngine") \
+    .config("spark.jars", "./docs/postgresql-42.2.16.jar") \
     .getOrCreate()
 sc = spark.sparkContext.getOrCreate()
+
+# Database credentials
+database = "postgres"
+tgt_table = "public.film_metadata"
+user = "postgres"
+password  = "London.2021"
+
+# Define the DB connections
+jdbcUrl = f"jdbc:postgresql://localhost:5432/{database}"
+jdbcDriver = "org.postgresql.Driver"
 
 # Create a UDF for looking up wikipedia links
 def wikilink(i):
@@ -68,9 +76,8 @@ sqlDF = sqlDF.select("*")\
 sqlPDF = sqlDF.select("*").toPandas()
 
 # Create a loop to populate the Wiki links and abstracts
-
 m = 0
-while m <= 5:
+while m <= 20:
     func_val = sqlPDF.at[m, 'title']
     link = wikilink(func_val)
     abstract = wikiabstract(func_val)
@@ -82,5 +89,17 @@ print("The links and abstracts have been populated.")
 
 # Show the results
 sqlDF = spark.createDataFrame(sqlPDF)
-sqlDF.repartition(1).write.csv('./files/metadata_sample.csv', header=True,)
+#sqlDF.repartition(1).write.csv('./files/metadata_sample.csv', header=True,)
 sqlDF.show()
+
+# Create or replace a table in PostgreSQL DB and load the data from the DataFrame
+
+sqlDF.select("title","budget", "year", "revenue", "ratio", "production_company", "wiki_link", "wiki_abstract") \
+    .write.format("jdbc") \
+    .mode("overwrite") \
+    .option("url", jdbcUrl) \
+    .option("dbtable", tgt_table) \
+    .option("user", user) \
+    .option("password", password) \
+    .option("driver", jdbcDriver) \
+    .save()

@@ -10,10 +10,6 @@ api.authenticate()
 kaggle_dataset = 'rounakbanik/the-movies-dataset'
 kaggle_file_name = 'movies_metadata.csv'
 
- #Download all files of a dataset
-# Signature: dataset_download_files(dataset, path=None, force=False, quiet=True, unzip=False)
-#api.dataset_download_files('avenn98/world-of-warcraft-demographics')
-
 # Download single file
 #Signature: dataset_download_file(dataset, file_name, path=None, force=False, quiet=True)
 api.dataset_download_file(kaggle_dataset,kaggle_file_name,path='./files/')
