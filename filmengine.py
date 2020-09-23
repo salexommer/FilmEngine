@@ -138,4 +138,5 @@ sqlDF.select("title","budget", "year", "revenue", "ratio", "production_company",
     .option("password", password) \
     .option("driver", jdbcDriver) \
     .save()
+sqlDF.show()
 print("\n ...the ETL process is now complete! \n")

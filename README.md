@@ -81,24 +81,134 @@ until finished
 
 End with an example of getting some data out of the system or using it for a little demo
 
-## Running the tests
+## Running the FilmEngine
 
-Explain how to run the automated tests for this system
+After the pre-requisites are met and the initial set up is complete all you need to du is to rune the "filmengine.py".
+The script executes the full ETL pipeline from extraction, to applying the transformation logic and finally loading the data.
+Below is the high level view of the sections and the expected output for each.
 
-### Break down into end to end tests
+### Extract
 
-Explain what these tests test and why
+The following section extracts a dataset from Kaggle 
+and decompresses it in the "/files/" subfolder.
 
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
+Below is the expected output:
 
 ```
-Give an example
+ Downloading and decompressing the file from rounakbanik/the-movies-dataset...
+
+
+...The movies_metadata.csv has been downloaded and extracted in the ./files/ directory.
+```
+
+### Transformation
+
+Process the CSV file and apply transformations using Spark.
+This happens in a few key steps
+1. Building a DataFrame from the CSV
+
+```
+Expected output:
+
+ Building a Spark DataFrame and a Temporary view...
+
+                                                                                
+ ...the DataFrame has now been built.
+
++--------------------+-------+----+---------+------+--------------------+--------------------+-------------+---------+
+|               title| budget|year|  revenue|rating|               ratio|  production_company|wiki_abstract|wiki_link|
++--------------------+-------+----+---------+------+--------------------+--------------------+-------------+---------+
+|The Karate Kid, P...|    113|1986|115103979|   5.9|9.817210576186946E-7|[{'name': 'Columb...|         null|     null|
+| Paranormal Activity|  15000|2007|193355800|   5.9|7.757719189183877E-5|[{'name': 'Blumho...|         null|     null|
+|           Tarnation|    218|2003|  1162014|   7.5|1.876053128447677...|                  []|         null|     null|
+|The Blair Witch P...|  60000|1999|248000000|   6.3|2.419354838709677...|[{'name': 'Artisa...|         null|     null|
+|                대호|   5000|2015| 11083449|   7.5|4.511231115873768E-4|[{'name': 'Next E...|         null|     null|
+|          Eraserhead|  10000|1977|  7000000|   7.5|0.001428571428571...|[{'name': 'Americ...|         null|     null|
+|            猛龍過江| 130000|1972| 85000000|   7.4|0.001529411764705...|[{'name': 'Golden...|         null|     null|
+|      Pink Flamingos|  12000|1972|  6000000|   6.2|               0.002|[{'name': 'Dreaml...|         null|     null|
+|       Super Size Me|  65000|2004| 28575078|   6.6|0.002274709451361...|[{'name': 'Kathbu...|         null|     null|
+|         The Gallows| 100000|2015| 42664410|   4.9|0.002343873968959...|[{'name': 'New Li...|         null|     null|
+|          Open Water| 130000|2004| 54667954|   5.3|0.002377992781657788|[{'name': 'Plunge...|         null|     null|
+|The Texas Chain S...|  85000|1974| 30859000|   7.1|0.002754463851712...|[{'name': 'New Li...|         null|     null|
+|               Bambi| 858000|1942|267447150|   6.8|0.003208110462197...|[{'name': 'Walt D...|         null|     null|
+|             Mad Max| 400000|1979|100000000|   6.6|               0.004|[{'name': 'Kenned...|         null|     null|
+|           Halloween| 300000|1978| 70000000|   7.4|0.004285714285714286|[{'name': 'Compas...|         null|     null|
+|The Legend of Bog...| 100000|1972| 22000000|   5.6|0.004545454545454545|[{'name': 'P & L'...|         null|     null|
+| Alice in Wonderland|3000000|1951|572000000|   7.0|0.005244755244755245|[{'name': 'RKO Ra...|         null|     null|
+|   American Graffiti| 777000|1973|140000000|   6.9|             0.00555|[{'name': 'Lucasf...|         null|     null|
+|   Let's Do It Again|  70000|1975| 11800000|   7.7|0.005932203389830509|[{'name': 'First ...|         null|     null|
+|         Blood Feast|  24500|1963|  4000000|   5.3|            0.006125|[{'name': 'Friedm...|         null|     null|
++--------------------+-------+----+---------+------+--------------------+--------------------+-------------+---------+
+only showing top 20 rows
+
+```
+
+2. Creating a temporary view, applying the business logic
+
+```
+Expected output:
+
+ Now populating the Wikipedia links and abstracts...
+
+Row 0 has been populated for the film: The Karate Kid, Part II
+Row 1 has been populated for the film: Paranormal Activity
+Row 2 has been populated for the film: Tarnation
+Row 3 has been populated for the film: The Blair Witch Project
+Row 4 has been populated for the film: 대호
+Row 5 has been populated for the film: Eraserhead
+Row 6 has been populated for the film: 猛龍過江
+Row 7 has been populated for the film: Pink Flamingos
+Row 8 has been populated for the film: Super Size Me
+Row 9 has been populated for the film: The Gallows
+Row 10 has been populated for the film: Open Water
+Row 11 has been populated for the film: The Texas Chain Saw Massacre
+Row 12 has been populated for the film: Bambi
+Row 13 has been populated for the film: Mad Max
+Row 14 has been populated for the film: Halloween
+Row 15 has been populated for the film: The Legend of Boggy Creek
+Row 16 has been populated for the film: Alice in Wonderland
+Row 17 has been populated for the film: American Graffiti
+Row 18 has been populated for the film: Let's Do It Again
+Row 19 has been populated for the film: Blood Feast
+Row 20 has been populated for the film: A Ghost Story
+
+ ...links and abstracts populated.
+```
+
+3. Populating the Wiki links and abstracts
+
+```
+Expected output:
+
+ Loading the final DataFrame into the PostgreSQL DB.
+
+                                                                                
+ ...the ETL process is now complete! 
+
+ +--------------------+-------+----+---------+-----------------+--------------------+--------------------+--------------------+--------------------+
+|               title| budget|year|  revenue|           rating|               ratio|  production_company|       wiki_abstract|           wiki_link|
++--------------------+-------+----+---------+-----------------+--------------------+--------------------+--------------------+--------------------+
+|The Karate Kid, P...|    113|1986|115103979|5.900000095367432|9.817210576186946E-7|[{'name': 'Columb...|The Karate Kid Pa...|https://en.wikipe...|
+| Paranormal Activity|  15000|2007|193355800|5.900000095367432|7.757719189183877E-5|[{'name': 'Blumho...|Paranormal Activi...|https://en.wikipe...|
+|           Tarnation|    218|2003|  1162014|              7.5|1.876053128447677...|                  []|                null|https://en.wikipe...|
+|The Blair Witch P...|  60000|1999|248000000|6.300000190734863|2.419354838709677...|[{'name': 'Artisa...|The Blair Witch P...|https://en.wikipe...|
+|                대호|   5000|2015| 11083449|              7.5|4.511231115873768E-4|[{'name': 'Next E...|Ra Mi-ran (born M...|https://en.wikipe...|
+|          Eraserhead|  10000|1977|  7000000|              7.5|0.001428571428571...|[{'name': 'Americ...|Eraserhead is a 1...|https://en.wikipe...|
+|            猛龍過江| 130000|1972| 85000000|7.400000095367432|0.001529411764705...|[{'name': 'Golden...|The Way of the Dr...|https://en.wikipe...|
+|      Pink Flamingos|  12000|1972|  6000000|6.199999809265137|               0.002|[{'name': 'Dreaml...|Pink Flamingos is...|https://en.wikipe...|
+|       Super Size Me|  65000|2004| 28575078|6.599999904632568|0.002274709451361...|[{'name': 'Kathbu...|Super Size Me is ...|https://en.wikipe...|
+|         The Gallows| 100000|2015| 42664410|4.900000095367432|0.002343873968959...|[{'name': 'New Li...|The Gallows is a ...|https://en.wikipe...|
+|          Open Water| 130000|2004| 54667954|5.300000190734863|0.002377992781657788|[{'name': 'Plunge...|Open Water is a 2...|https://en.wikipe...|
+|The Texas Chain S...|  85000|1974| 30859000|7.099999904632568|0.002754463851712...|[{'name': 'New Li...|The Texas Chain S...|https://en.wikipe...|
+|               Bambi| 858000|1942|267447150|6.800000190734863|0.003208110462197...|[{'name': 'Walt D...|Bambi is a 1942 A...|https://en.wikipe...|
+|             Mad Max| 400000|1979|100000000|6.599999904632568|               0.004|[{'name': 'Kenned...|Mad Max is a 1979...|https://en.wikipe...|
+|           Halloween| 300000|1978| 70000000|7.400000095367432|0.004285714285714286|[{'name': 'Compas...|Halloween is an A...|https://en.wikipe...|
+|The Legend of Bog...| 100000|1972| 22000000|5.599999904632568|0.004545454545454545|[{'name': 'P & L'...|The Legend of Bog...|https://en.wikipe...|
+| Alice in Wonderland|3000000|1951|572000000|              7.0|0.005244755244755245|[{'name': 'RKO Ra...|Alice in Wonderla...|https://en.wikipe...|
+|   American Graffiti| 777000|1973|140000000|6.900000095367432|             0.00555|[{'name': 'Lucasf...|American Graffiti...|https://en.wikipe...|
+|   Let's Do It Again|  70000|1975| 11800000|7.699999809265137|0.005932203389830509|[{'name': 'First ...|Let's Do It Again...|https://en.wikipe...|
+|         Blood Feast|  24500|1963|  4000000|5.300000190734863|            0.006125|[{'name': 'Friedm...|Blood Feast is a ...|https://en.wikipe...|
++--------------------+-------+----+---------+-----------------+--------------------+--------------------+--------------------+--------------------+
 ```
 
 ## Contributing
