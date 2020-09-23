@@ -14,8 +14,15 @@ import zipfile
 # Other Libraries
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import monotonically_increasing_id, lit, udf
+from kaggle.api.kaggle_api_extended import KaggleApi
 import wikipedia
 import pandas as pd
 
 # Own Modules
+from filmengine.kaggle_extract 
+# Variables
+kaggle_dataset = 'rounakbanik/the-movies-dataset'
+kaggle_file_name = 'movies_metadata.csv'
+files_dir = './files/'
 
+# Extract: Download and extract the kaggle metadata file
