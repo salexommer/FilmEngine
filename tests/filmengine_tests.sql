@@ -1,9 +1,9 @@
-'''
+/*
 This test file provides a number of tests to be run on the table in the DB.
 
 Author: Alexander Sommer
 Initial Release: 20/09/2020
-'''
+*/
 
 select * from film_metadata;
 
