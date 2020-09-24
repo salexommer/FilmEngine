@@ -5,8 +5,6 @@ Author: Alexander Sommer
 Initial Release: 20/09/2020
 */
 
-select * from film_metadata;
-
 -- Describe the schema in the DB to make sure all appropriate data types apply.
 SELECT 
    table_name, 
