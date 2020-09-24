@@ -249,7 +249,7 @@ Expected output:
 To verify the script has worked we can do a series of simple SQL queries to check the following:
 - Describe the schema in the DB to make sure all appropriate data types apply.
 - Check the count of rows, we're expecting 1000 rows.
-- Verify year, budget and revenue columns for any outliers.
+- Verify budget and revenue columns for any outliers.
 - Check for Nulls in the wiki abstracts, links columns to see if these are valid films titles.
 
 ## Roadmap
