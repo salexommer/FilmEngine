@@ -117,7 +117,7 @@ All done!
 
 ## Running the FilmEngine
 
-After the pre-requisites are met and the initial set up is complete all you need to du is to rune the "filmengine.py".
+After the pre-requisites are met and the initial set up is complete all you need to do is to rune the "filmengine.py".
 The script executes the full ETL pipeline from extraction, to applying the transformation logic and finally loading the data.
 Below is the high level view of the sections and the expected output for each.
 
@@ -260,7 +260,7 @@ In the future there are a number of improvements that can be implemented as part
 
 Performance upgrades
 - As it stands, the filmengine performs a loop over rows to acquire the relevant Wikipedia metadata. This is not exactly efficient, an alternative method would be to create two custom modules to download the whole dump and parse it to extract the values.
-- The direct download module is already created under "/modules/deprecated/" but has been taken out for the time being until te parser is complete.
+- The direct download module is already created under "/modules/deprecated/" but has been taken out for the time being until the parser is complete.
 - The parser would be looking at the XML dump and extracting relevant the relevant values and store it in a tabular format.
 - This DataFrame would then be joined with the main metadata table within Spark to populate the relevant metadata.
 
