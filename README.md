@@ -251,6 +251,7 @@ To verify the script has worked we can do a series of simple SQL queries to chec
 - Check the count of rows, we're expecting 1000 rows.
 - Verify budget and revenue columns for any outliers.
 - Check for Nulls in the wiki abstracts, links columns to see if these are valid films titles.
+The full set of queries is provided in the "/tests/" folder.
 
 ## Roadmap
 
