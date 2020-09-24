@@ -126,8 +126,6 @@ Below is the high level view of the sections and the expected output for each.
 The following section extracts a dataset from Kaggle 
 and decompresses it in the "/files/" subfolder.
 
-Below is the expected output:
-
 ```
  Downloading and decompressing the file from rounakbanik/the-movies-dataset...
 
@@ -137,9 +135,7 @@ Below is the expected output:
 
 ### Transformation
 
-Process the CSV file and apply transformations using Spark.
-This happens in a few key steps
-1. Building a DataFrame from the CSV
+Once the file is ready, the CSV file is processed and transformations are applied using Spark.
 
 ```
 Expected output:
@@ -177,7 +173,7 @@ only showing top 20 rows
 
 ```
 
-2. Creating a temporary view, applying the business logic
+Final transformation step is to populate the Wikipedia columns.
 
 ```
 Expected output:
@@ -209,7 +205,9 @@ Row 20 has been populated for the film: A Ghost Story
  ...links and abstracts populated.
 ```
 
-3. Populating the Wiki links and abstracts
+### Load
+
+The final step is to create the relevant table in the database and load the data in from the DataFrame.
 
 ```
 Expected output:
