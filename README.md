@@ -6,10 +6,10 @@ FilmEngine is an end-to-end Spark based data pipeline that extracts, models and 
 TrueFilm is a film investment company - they fund new projects, with the goal of taking a share of any profits. In the past, these decisions were made on gut feeling, but as the industry becomes more and more competitive they  would like to become more data driven. They believe that by understanding which films have performed well in the past, they can make better decisions. In order to aid TrueFilm with their decision making process we'll need to source relevant data, model it and extract value out of it. For this exercise we'll be creating an *engine* that consists of various modules to help us make this happen. To understand the process let's discuss the task on hand in three sections; **What** the steps should be, **how** we execute these and **why** we'll be doing it in this manner.
 
 ### What
-To make data driven decisions we'll need data that gives us flm digests and metadata to drive our calculations. For the first dataset we'll use a Wikimedia extract of the latest films (approx 722MB) and a Kaggle metadata dataset (228MB).
+To make data driven decisions we'll need data that gives us flm digests and metadata to drive our calculations. For the first dataset we'll use a Wikimedia extract of the latest films (approx 722MB) and a Kaggle metadata dataset (228MB). An alternative solution is to make use of Wikipedia APIs to extract the relevant metadata.
 Conceptually there are a number of functional steps we need to perform to get our insights:
 - For each film, calculate the ratio of budget to revenue
-- Match each movie in the IMDb dataset with its corresponding Wikipedia page
+- Match each movie in the IMDb dataset with its corresponding Wikipedia page via API or a Wikipedia dump
 - Load the top 1000 movies with the highest ratio into a Postgres database, including the following for each movie:
   - Title
   - Budget
@@ -31,6 +31,7 @@ The full data pipeline would consist of the following modules:
     - Store the data inside Spark DataFrames with inferred Schemas
     - Standardize any facts e.g. dates, integers, varchar
     - Apply business logic
+    - Populate the Wikipedia metadata
 3. Loading
     - Create the relevant target table in the database
     - Load the DataFrames into the respective tables
@@ -65,21 +66,54 @@ What things you need to install the software and how to install them
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+Bellow are the necessary steps for configuring the environment in order to get a development up and running.
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
+1. Install and setup Python and Pip on your machine
 
 ```
-until finished
+1. Install Python on your machine Mac/Windows, see the link in the pre-reqs for a link.
+2. Install Pip by running the below commands:
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+    python get-pip.py
+    For more information around configuration, see the link the section above.
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+2. Create an account on Kaggle and acquire your API keys
+
+```
+1. Run the following command to access the Kaggle API using the command line: pip install kaggle (You may need to do pip install --user kaggle on Mac/Linux. This is recommended if problems come up during the installation process.) Follow the authentication steps below and you’ll be able to use the kaggle CLI tool.
+2. In order to use the Kaggle’s public API, you must first authenticate using an API token. From the site header, click on your user profile picture, then on “My Account” from the dropdown menu. This will take you to your account settings at https://www.kaggle.com/account. Scroll down to the section of the page labelled API:
+    - To create a new token, click on the “Create New API Token” button. This will download a fresh authentication token onto your machine.
+    - If you are using the Kaggle CLI tool, the tool will look for this token at ~/.kaggle/kaggle.json on Linux, OSX, and other UNIX-based operating systems, and at C:\Users<Windows-username>.kaggle\kaggle.json on Windows. If the token is not there, an error will be raised. Hence, once you’ve downloaded the token, you should move it from your Downloads folder to this folder.
+```
+
+2. Install PySpark on your machine
+
+```
+1. PySpark is now available in pypi. To install just run:
+    pip install pyspark.
+2. In case you encounter any worker issues when running the commands make sure you configure your Spark environment. In your "~/.zshrc" or "~/.bin" set up the following variables. These are dependent on your own machine.
+    export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-14.jdk/Contents/Home/
+    export PYSPARK_PYTHON="/usr/bin/python3"
+    export PYSPARK_DRIVER_PYTHON="/usr/bin/python3"
+```
+
+3. Install a PostgresSQL database on your local machine. Make sure you take note of your "user", "password", "port_number", "db_name" and update it in the "env_variables.py" files under the "./docs/" folder.
+
+```
+1. Downloading the installer
+2. Launching the installation
+3. Selecting the install location
+4. Selecting components
+5. Selecting where to store data
+6. Setting the user password
+7. Selecting the port number
+8. Setting locale
+9. Review and installation
+10. Checking the process
+```
+
+All done!
 
 ## Running the FilmEngine
 
@@ -212,9 +246,29 @@ Expected output:
 ```
 ## Tests
 
-Running the tests on the dataset.
+To verify the script has worked we can do a series of simple SQL queries to check the following:
+- Describe the schema in the DB to make sure all appropriate data types apply.
+- Check the count of rows, we're expecting 1000 rows.
+- Verify year, budget and revenue columns for any outliers.
+- Check for Nulls in the wiki abstracts, links columns to see if these are valid films titles.
 
 ## Roadmap
+
+In the future there are a number of improvements that can be implemented as part of the features roadmap.
+
+Performance upgrades
+- As it stands, the filmengine performs a loop over rows to acquire the relevant Wikipedia metadata. This is not exactly efficient, an alternative method would be to create two custom modules to download the whole dump and parse it to extract the values.
+- The direct download module is already created under "/modules/deprecated/" but has been taken out for the time being until te parser is complete.
+- The parser would be looking at the XML dump and extracting relevant the relevant values and store it in a tabular format.
+- This DataFrame would then be joined with the main metadata table within Spark to populate the relevant metadata.
+
+Portability
+- As you may have observed, there are a few pre-requisites to be met in order to get up and running. Many times this causes local incompatibilities i.e. "It works on my machine!!"
+- In the future the idea is to containerize the script with all the dependencies inside a docker container. This would alleviate any potential incompatibility issues and would make for a trip that's universal across various operating systems; Linux, MacOS or Windows. 
+
+Modularity
+- Currently the core of the script is written in Spark and the DataFrames schemas are hardcoded.
+- In the future there's space for improvement to create a function that parses the schema of the CSV file and creates the schema based on that. This would make the filmengine a lot more modular, since fewer to no edits would have to be done to the core of the script other than point to the right download links.
 
 ## Contributing
 
@@ -232,9 +286,3 @@ Versioning is not implemented. For the versions available, see the [tags on this
 ## License
 
 This project is is not licensed and is free to use.
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
