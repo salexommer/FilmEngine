@@ -110,7 +110,7 @@ sqlDF.show()
 # Populate the DataFrame with Wikipedia links and abstracts
 print("\n Now populating the Wikipedia links and abstracts...\n")
 m = 0
-while m <= 20:
+while m <= 1000:
     func_val = sqlPDF.at[m, 'title']
     link = wikilink(func_val)
     abstract = wikiabstract(func_val)
